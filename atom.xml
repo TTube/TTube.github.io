@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>TTube Space</title>
-  
+  <subtitle>DREAM I WISH IT DO IT</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-05-21T16:37:02.000Z</updated>
+  <updated>2016-05-22T07:19:52.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,48 +16,31 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>life</title>
-    <link href="http://yoursite.com/2016/05/21/life/"/>
-    <id>http://yoursite.com/2016/05/21/life/</id>
+    <title>开篇</title>
+    <link href="http://yoursite.com/2016/05/21/%E6%98%AF%E7%9A%84%E6%88%91%E5%8F%88%E5%BC%80%E5%A7%8B%E5%86%99%E5%8D%9A%E5%AE%A2%E4%BA%86/"/>
+    <id>http://yoursite.com/2016/05/21/是的我又开始写博客了/</id>
     <published>2016-05-21T15:55:21.000Z</published>
-    <updated>2016-05-21T16:37:02.000Z</updated>
+    <updated>2016-05-22T07:19:52.000Z</updated>
     
-    <content type="html">&lt;h4 id=&quot;Enjoy&quot;&gt;&lt;a href=&quot;#Enjoy&quot; class=&quot;headerlink&quot; title=&quot;Enjoy&quot;&gt;&lt;/a&gt;Enjoy&lt;/h4&gt;</content>
+    <content type="html">&lt;p&gt;这篇算是开篇了吧＝。＝&lt;/p&gt;
+&lt;p&gt;标签给了 Wuli.Huan 我的猫大人&lt;br&gt;&lt;img src=&quot;http://o7kgwcg81.bkt.clouddn.com/IMG_1100.JPG&quot; class=&quot;full-image&quot;&gt;&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt; 
+&lt;h3 id=&quot;是的我又开始写博客了&quot;&gt;&lt;a href=&quot;#是的我又开始写博客了&quot; class=&quot;headerlink&quot; title=&quot;是的我又开始写博客了&quot;&gt;&lt;/a&gt;是的我又开始写博客了&lt;/h3&gt;&lt;p&gt;记得我在大三实习的时候，我们的BOSS Meg 跟我们说过一句话，大概的意思是：在你参加工作之后，最好开始写博客，当你回过头看的时候，就是一个你的成长史。当时我就已经有继续把我163上面的博客继续写的冲动了，只可惜当时还喜欢玩游戏（现在也喜欢，只是时间不多），冲动当晚就消失了。&lt;/p&gt;
+&lt;p&gt;到了现在，毕业也快一年了。这一年里，写了很多代码，碰到了很多问题，还养了只猫，这么多可以记录的东西，不记下来太可惜了！&lt;/p&gt;
+&lt;p&gt;终于，用一个周末的时间，选择了一些blog的方案, 最终选择了Hexo+Github Pages的方案，并且完成了这一篇博客。&lt;/p&gt;
+</content>
     
     <summary type="html">
     
-      &lt;h4 id=&quot;Enjoy&quot;&gt;&lt;a href=&quot;#Enjoy&quot; class=&quot;headerlink&quot; title=&quot;Enjoy&quot;&gt;&lt;/a&gt;Enjoy&lt;/h4&gt;
+      &lt;p&gt;这篇算是开篇了吧＝。＝&lt;/p&gt;
+&lt;p&gt;标签给了 Wuli.Huan 我的猫大人&lt;br&gt;&lt;img src=&quot;http://o7kgwcg81.bkt.clouddn.com/IMG_1100.JPG&quot; class=&quot;full-image&quot; /&gt;&lt;/p&gt;
     
     </summary>
     
       <category term="life" scheme="http://yoursite.com/categories/life/"/>
     
     
-  </entry>
-  
-  <entry>
-    <title>Hey I&#39;m Galvin</title>
-    <link href="http://yoursite.com/2016/05/21/Hey-I-m-Galvin/"/>
-    <id>http://yoursite.com/2016/05/21/Hey-I-m-Galvin/</id>
-    <published>2016-05-21T15:41:58.000Z</published>
-    <updated>2016-05-21T16:36:59.000Z</updated>
-    
-    <content type="html">&lt;h3 id=&quot;Hey&quot;&gt;&lt;a href=&quot;#Hey&quot; class=&quot;headerlink&quot; title=&quot;Hey&quot;&gt;&lt;/a&gt;Hey&lt;/h3&gt;&lt;hr&gt;
-&lt;p&gt;This is my first blog&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;Hey&quot;&gt;&lt;a href=&quot;#Hey&quot; class=&quot;headerlink&quot; title=&quot;Hey&quot;&gt;&lt;/a&gt;Hey&lt;/h3&gt;&lt;hr&gt;
-&lt;p&gt;This is my first blog&lt;/p&gt;
-
-    
-    </summary>
-    
-    
-      <category term="Testing" scheme="http://yoursite.com/tags/Testing/"/>
-    
-      <category term="Another Tag" scheme="http://yoursite.com/tags/Another-Tag/"/>
+      <category term="Wuli.Huan" scheme="http://yoursite.com/tags/Wuli-Huan/"/>
     
   </entry>
   

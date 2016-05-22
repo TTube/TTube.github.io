@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2016/05/21/%E6%98%AF%E7%9A%84%E6%88%91%E5%8F%88%E5%BC%80%E5%A7%8B%E5%86%99%E5%8D%9A%E5%AE%A2%E4%BA%86/</loc>
+    
+    <lastmod>2016-05-22T07:19:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/categories/index.html</loc>
     
-    <lastmod>2016-05-21T16:59:40.000Z</lastmod>
+    <lastmod>2016-05-22T06:47:34.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/about/index.html</loc>
+    
+    <lastmod>2016-05-22T06:44:37.000Z</lastmod>
     
   </url>
   
@@ -12,20 +26,6 @@
     <loc>http://yoursite.com/tags/index.html</loc>
     
     <lastmod>2016-05-21T16:58:03.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2016/05/21/life/</loc>
-    
-    <lastmod>2016-05-21T16:37:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2016/05/21/Hey-I-m-Galvin/</loc>
-    
-    <lastmod>2016-05-21T16:36:59.000Z</lastmod>
     
   </url>
   
