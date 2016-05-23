@@ -1,0 +1,707 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="TTube Space" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="背景
+一天，测试妹子跑过来给我提了个问题：一个列表页A，在请求数据（刷新中）的时候，点了别的按钮，push进了界面B，抓包能看到有返回结果，但是pop掉B之后，发现A的界面并没有更新。我当时就虎躯一震！竟然会有这样的错误？然后走了各种弯路解决了之后，最后知道真相的我眼泪掉下来.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UITableView reloadData 无响应的历险记">
+<meta property="og:url" content="http://yoursite.com/2016/05/23/TableViewTrick/index.html">
+<meta property="og:site_name" content="TTube Space">
+<meta property="og:description" content="背景
+一天，测试妹子跑过来给我提了个问题：一个列表页A，在请求数据（刷新中）的时候，点了别的按钮，push进了界面B，抓包能看到有返回结果，但是pop掉B之后，发现A的界面并没有更新。我当时就虎躯一震！竟然会有这样的错误？然后走了各种弯路解决了之后，最后知道真相的我眼泪掉下来.">
+<meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%202.jpg">
+<meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/step1.gif">
+<meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%204.jpg">
+<meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/step2.gif">
+<meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg">
+<meta property="og:updated_time" content="2016-05-23T18:08:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UITableView reloadData 无响应的历险记">
+<meta name="twitter:description" content="背景
+一天，测试妹子跑过来给我提了个问题：一个列表页A，在请求数据（刷新中）的时候，点了别的按钮，push进了界面B，抓包能看到有返回结果，但是pop掉B之后，发现A的界面并没有更新。我当时就虎躯一震！竟然会有这样的错误？然后走了各种弯路解决了之后，最后知道真相的我眼泪掉下来.">
+<meta name="twitter:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%202.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> UITableView reloadData 无响应的历险记 | TTube Space </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">TTube Space</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">DREAM IT<br>WISH IT</br> DO IT</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                UITableView reloadData 无响应的历险记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-23T22:23:32+08:00" content="2016-05-23">
+              2016-05-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发/" itemprop="url" rel="index">
+                    <span itemprop="name">开发</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/05/23/TableViewTrick/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/23/TableViewTrick/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><blockquote>
+<p>一天，测试妹子跑过来给我提了个问题：一个列表页A，在请求数据（刷新中）的时候，点了别的按钮，push进了界面B，抓包能看到有返回结果，但是pop掉B之后，发现A的界面并没有更新。我当时就虎躯一震！竟然会有这样的错误？然后走了各种弯路解决了之后，最后知道真相的我眼泪掉下来.</p>
+</blockquote>
+<div align="center"><br><img src="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%202.jpg" width="200" height="200" alt="图片名称" align="center"><br></div>
+
+
+<a id="more"></a> 
+<p><br><br><br>问题如果文字表述不清楚的话，可以看一下demo，点击clear点击之后会清空数据，代表当前是一个没有数据的初始状态<br>点击了 push &amp; reload 之后，就会push到一个新的页面，并且在1秒后，模仿网络回调，调用 [tableView reload]。按照一般来说，就算push了之后，发生reload行为，tableView也是能够被reload到的，那到底是为什么会出现这个问题呢？</p>
+<div align="center"><br><img src="http://o7kgwcg81.bkt.clouddn.com/step1.gif" width="530" height="507" alt="图片名称" align="center"><br></div>
+
+
+<h4 id="round-1"><a href="#round-1" class="headerlink" title="round 1"></a>round 1</h4><p>于是我查看了本地的log，发现回调的确是有调用的，并且tableView在那个方法里也的确有reload。但是一旦push了之后再调用回调就不顶用了，咋回事儿？</p>
+<p>于是我po了tableView的window, 发现push的时候，window指向了0x00000000，我擦? 难道是这个原因？感觉发现了一个大新闻，于是当时就给viewController，加了个flag来判断当前的的window是否为空，像下面这样</p>
+<pre><code><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidAppear:(<span class="built_in">BOOL</span>)animated &#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span>.needReloadWhenAppear) &#123;</span><br><span class="line">	    [<span class="keyword">self</span>.tableView reloadData];	</span><br><span class="line">	    <span class="keyword">self</span>.needReloadWhenAppear = <span class="literal">NO</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)xxxxDataDidReceive:(XXXModule *)module &#123;</span><br><span class="line">	...</span><br><span class="line">	[<span class="keyword">self</span>.tableView reloadData];</span><br><span class="line">	<span class="keyword">if</span> (!<span class="keyword">self</span>.tableView.window) &#123;</span><br><span class="line">	    <span class="keyword">self</span>.needReloadWhenAppear = <span class="literal">YES</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p>好了问题解决，这篇博客到此为止</p>
+<p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
+<h4 id="round-2"><a href="#round-2" class="headerlink" title="round 2"></a>round 2</h4><p>这怎么行，这种解决方法太ugly了，太丑陋了，根本没有可以复用的地方，万一以后他们遇到了同样的问题怎么办？来，造个轮子解决掉它吧!首先想到的就是 搞一个基类UITableView，如 XXXTableView，项目的所有tableView都要继承于它</p>
+<p>然后解决方式可以是类似round1中的解法，加个flag</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XXXTableView</span> ()</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> needReloadWhenAppear;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span></span></span><br><span class="line">- (<span class="keyword">void</span>)willMoveToWindow:(<span class="built_in">UIWindow</span> *)newWindow &#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span>.needReloadWhenAppear) &#123;</span><br><span class="line">		[<span class="keyword">self</span> reloadData];</span><br><span class="line">		<span class="keyword">self</span>.needReloadWhenAppear = <span class="literal">NO</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)reload &#123;</span><br><span class="line">	[<span class="keyword">super</span> reload];</span><br><span class="line">	<span class="keyword">if</span> (!<span class="keyword">self</span>.window) &#123;</span><br><span class="line">		<span class="keyword">self</span>.needReloadWhenAppear = <span class="literal">YES</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来像是解决了，有没有更好的办法，让别人在无痛的时候就把这个bug解掉了呢？</p>
+<p> <span id="jump_round3"></span></p>
+<h4 id="round-3"><a href="#round-3" class="headerlink" title="round 3"></a>round 3</h4><p>那就用catogory吧～对工程代码没有侵入，还能在别人没有感知的情况下解决他们有可能碰到的问题！perfect！<br>那直接就method swizzling吧，上代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *<span class="keyword">const</span> reloadAble_method_head = <span class="string">@"reloadable_"</span>;</span><br><span class="line"></span><br><span class="line">__inline__ __attribute__((always_inline)) <span class="keyword">void</span> MethodSwizzle(Class class,SEL origSEL,SEL overrideSEL)</span><br><span class="line">&#123;</span><br><span class="line">    Method origMethod = class_getInstanceMethod(class, origSEL);</span><br><span class="line">    Method overrideMethod= class_getInstanceMethod(class, overrideSEL);</span><br><span class="line">    <span class="keyword">if</span>(class_addMethod(class, origSEL, method_getImplementation(overrideMethod),method_getTypeEncoding(overrideMethod)))&#123;</span><br><span class="line">        class_replaceMethod(class,overrideSEL, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        method_exchangeImplementations(origMethod,overrideMethod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UITableView</span> (<span class="title">_ReloadAble</span>)</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">BOOL</span> needReadWhenMoveToWindow; <span class="comment">//定义属性，当发生reload动作的时候用来记录是否需要在重新展示的时候reload</span></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UITableView</span> (<span class="title">_ReloadAble</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)setNeedReadWhenMoveToWindow:(<span class="built_in">BOOL</span>)needReadWhenMoveToWindow &#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>,  _cmd, @(needReadWhenMoveToWindow), OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)needReadWhenMoveToWindow &#123;</span><br><span class="line">    <span class="built_in">NSNumber</span> * needReadWhenMoveToWindow =  objc_getAssociatedObject(<span class="keyword">self</span>, <span class="keyword">@selector</span>(setNeedReadWhenMoveToWindow:));</span><br><span class="line">    <span class="keyword">return</span> [needReadWhenMoveToWindow boolValue];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UITableView</span> (<span class="title">ReloadAble</span>)</span></span><br><span class="line">+ (<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    SEL selectors[] = &#123;</span><br><span class="line">        <span class="keyword">@selector</span>(reloadData),</span><br><span class="line">        <span class="keyword">@selector</span>(willMoveToWindow:),</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">NSUInteger</span> index = <span class="number">0</span>; index &lt; <span class="keyword">sizeof</span>(selectors) / <span class="keyword">sizeof</span>(SEL); ++index) &#123;</span><br><span class="line">        SEL originalSelector = selectors[index];</span><br><span class="line">        SEL swizzledSelector = <span class="built_in">NSSelectorFromString</span>([<span class="string">@"reloadable_"</span> stringByAppendingString:<span class="built_in">NSStringFromSelector</span>(originalSelector)]);</span><br><span class="line">        MethodSwizzle(<span class="keyword">self</span>,originalSelector,swizzledSelector);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)reloadable_willMoveToWindow:(<span class="built_in">UIWindow</span> *)newWindow &#123;</span><br><span class="line">    [<span class="keyword">self</span> reloadable_willMoveToWindow:newWindow];</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.needReadWhenMoveToWindow &amp;&amp; newWindow)&#123;</span><br><span class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">0.1</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            [<span class="keyword">self</span> reloadData];</span><br><span class="line">            <span class="keyword">self</span>.needReadWhenMoveToWindow = <span class="literal">NO</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)reloadable_reloadData &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>.window)&#123;</span><br><span class="line">        <span class="keyword">self</span>.needReadWhenMoveToWindow = <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">self</span> reloadable_reloadData];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h4 id="round-4"><a href="#round-4" class="headerlink" title="round 4"></a>round 4</h4><p>ok基本上这样子就没什么问题了，然而这并没有什么卵用。<br>自己在测试的时候发现照样不能不给力，连reloadable_reloadData这个方法都没有被调用到，我擦咧？这次又想给我搞什么大新闻？</p>
+<div align="center"><br><img src="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%204.jpg" width="200" height="200" alt="图片名称" align="center"><br></div>
+
+<p>于是乎，我决定动态的给他method swizzling<br>就是这样</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// UITableView + ReloadAble.h</span></span><br><span class="line"><span class="comment">/*</span><br><span class="line">在需要用到重新加载的地方，将变量 reloadAgainAfterAppear 设置为 YES ，不需要的时候设置为 NO。</span><br><span class="line">当设置为YES的时候，就exchange一次，设置为NO的时候把它们exchange回来</span><br><span class="line">/*</span><br><span class="line">@interface UITableView (ReloadAble)</span><br><span class="line">@property (nonatomic, assign) BOOL reloadAgainAfterAppear;</span><br><span class="line">@end</span></span><br></pre></td></tr></table></figure>
+<p>实现</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> IMP reloadable_reload_IMP;</span><br><span class="line"><span class="keyword">static</span> IMP reloadable_moveToWindow_IMP;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UITableView</span> (<span class="title">ReloadAble</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在+(void)load的时候，把全局 imp 指针记录下来，用于后面的判断是否已经做了method exchange</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)load &#123;</span><br><span class="line">    <span class="keyword">if</span> (!reloadable_reload_IMP) &#123;</span><br><span class="line">        Method reloadable_Mehod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="built_in">NSSelectorFromString</span>(<span class="string">@"reloadable_reloadData"</span>));</span><br><span class="line">        Method reloadable_moveToWindow_Mehod = class_getInstanceMethod(<span class="keyword">self</span>, <span class="built_in">NSSelectorFromString</span>(<span class="string">@"reloadable_willMoveToWindow:"</span>));</span><br><span class="line">        reloadable_reload_IMP = method_getImplementation(reloadable_Mehod);</span><br><span class="line">        reloadable_moveToWindow_IMP = method_getImplementation(reloadable_moveToWindow_Mehod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br></pre></td></tr></table></figure>
+<p>核心代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#pragma mark - core</span></span><br><span class="line">- (<span class="keyword">void</span>)addMethod &#123;</span><br><span class="line">    Class currenClass = object_getClass(<span class="keyword">self</span>);</span><br><span class="line">    <span class="comment">//exchange方法，让相关的方法由该category的方法来持有，并且做相关的处理</span></span><br><span class="line">    <span class="built_in">NSArray</span> *overrideMethods = @[<span class="string">@"reloadData"</span>,<span class="string">@"willMoveToWindow:"</span>];</span><br><span class="line">    IMP impArr[<span class="number">2</span>] = &#123;reloadable_reload_IMP,reloadable_moveToWindow_IMP&#125;;</span><br><span class="line">    int32_t count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *originMethodName <span class="keyword">in</span> overrideMethods) &#123;</span><br><span class="line">        SEL originSel = <span class="built_in">NSSelectorFromString</span>(originMethodName);</span><br><span class="line">        SEL newSel = <span class="built_in">NSSelectorFromString</span>([[[<span class="built_in">NSString</span> alloc] initWithString:reloadAble_method_head] stringByAppendingString:originMethodName]);</span><br><span class="line">        <span class="keyword">if</span> (![<span class="keyword">self</span> methodDidSwizzle:newSel compareStaticMehod:impArr[count]])&#123;</span><br><span class="line">            MethodSwizzle(currenClass, originSel, newSel);</span><br><span class="line">        &#125;</span><br><span class="line">        count ++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)removeMethod &#123;</span><br><span class="line">    <span class="comment">//do nothing</span></span><br><span class="line">    Class currenClass = object_getClass(<span class="keyword">self</span>);</span><br><span class="line">    <span class="comment">//移除方法，即把替换的方法再换回来</span></span><br><span class="line">    <span class="built_in">NSArray</span> *didChangeMethodList = @[<span class="string">@"reloadable_reloadData"</span>,<span class="string">@"reloadable_willMoveToWindow:"</span>];</span><br><span class="line">    IMP impArr[<span class="number">2</span>] = &#123;reloadable_reload_IMP,reloadable_moveToWindow_IMP&#125;;</span><br><span class="line">     int32_t count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">NSString</span> *didChangeMethodName <span class="keyword">in</span> didChangeMethodList) &#123;</span><br><span class="line">        SEL didChangeSelector = <span class="built_in">NSSelectorFromString</span>(didChangeMethodName); <span class="comment">//指向superClass的实现</span></span><br><span class="line">        SEL origSelector = <span class="built_in">NSSelectorFromString</span>([didChangeMethodName stringByReplacingOccurrencesOfString:reloadAble_method_head withString:<span class="string">@""</span>]); <span class="comment">//指向reloadable代码块</span></span><br><span class="line">        <span class="keyword">if</span> ([<span class="keyword">self</span> methodDidSwizzle:didChangeSelector compareStaticMehod:impArr[count]])&#123;</span><br><span class="line">            MethodSwizzle(currenClass, didChangeSelector, origSelector);</span><br><span class="line">        &#125;</span><br><span class="line">        count ++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一段代码用于判断当前class的SEL的指针是否指向 全局的static imp，如果是，则代表method没有被exchange。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">BOOL</span>)methodDidSwizzle:(SEL)methodName compareStaticMehod:(IMP)compareImp &#123;</span><br><span class="line">    Method reloadable_Mehod = class_getInstanceMethod(object_getClass(<span class="keyword">self</span>), methodName);</span><br><span class="line">    IMP currentImp = method_getImplementation(reloadable_Mehod);</span><br><span class="line">    <span class="keyword">return</span> currentImp != compareImp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Associated的方式在category中使用属性</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#pragma mark - associated</span></span><br><span class="line">- (<span class="keyword">void</span>)setReloadAgainAfterAppear:(<span class="built_in">BOOL</span>)reloadAgainAfterAppear &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.reloadAgainAfterAppear != reloadAgainAfterAppear)&#123;</span><br><span class="line">        objc_setAssociatedObject(<span class="keyword">self</span>,  _cmd, @(reloadAgainAfterAppear), OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">        <span class="keyword">if</span> (reloadAgainAfterAppear) &#123;</span><br><span class="line">            [<span class="keyword">self</span> addMethod];</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            [<span class="keyword">self</span> removeMethod];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)reloadAgainAfterAppear &#123;</span><br><span class="line">    <span class="built_in">NSNumber</span> * reloadAgainAfterAppear =  objc_getAssociatedObject(<span class="keyword">self</span>, <span class="keyword">@selector</span>(setReloadAgainAfterAppear:));</span><br><span class="line">    <span class="keyword">return</span> [reloadAgainAfterAppear boolValue];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>然后在控制器里做以下几个动作，就完成了</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.mainView.reloadAgainAfterAppear = <span class="literal">NO</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidAppear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidAppear:animated];</span><br><span class="line">    <span class="keyword">self</span>.mainView.reloadAgainAfterAppear = <span class="literal">NO</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidDisappear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">super</span> viewWillDisappear:animated];</span><br><span class="line">    <span class="keyword">self</span>.mainView.reloadAgainAfterAppear = <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，这个category就完成了，再来验证一下问题是否存在～</p>
+<p><img src="http://o7kgwcg81.bkt.clouddn.com/step2.gif" alt="gif2"></p>
+<p>Done！完美！</p>
+<h4 id="round-5"><a href="#round-5" class="headerlink" title="round 5"></a>round 5</h4><p>这种解决方式让我产生了困扰，为什么需要这样子来解决？到底是什么原因导致了这个bug？为什么用了<a href="#jump_round3">round3</a>的方法无法hook到reloadData的这个方法？</p>
+<p>当时打印了reload的函数指针，发现它指向的是MJRefresh hook的reload方法，看了下它的实现，并没有什么问题。</p>
+<p>该不会是有某一个地方hook了reload的方法，并且在reload的时候 进行了window判断吧？<br>结果，还真的是这个问题……发现了在一个不起眼的地方，有一个我当时写来自动计算tableViewCell高度的一个category…里面为了不让tableView不在window的时候发生reload，运行了下面这一段代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)tt_reloadData</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(!<span class="keyword">self</span>.window)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.autoRefreshCellHeightCache)&#123;</span><br><span class="line">        [<span class="keyword">self</span>.portraitHeightCache clearCache];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.preCalculateCellHeight)&#123;</span><br><span class="line">        [<span class="keyword">self</span> registerPreCalculateRunloop];</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">self</span> tt_reloadData];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>真的是…<img src="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg" width="100" height="100" alt="图片名称" align="center"> </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/22/给某同学的内录教学/" rel="next" title="给某同学的内录教学">
+                <i class="fa fa-chevron-left"></i> 给某同学的内录教学
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/05/23/TableViewTrick/"
+           data-title="UITableView reloadData 无响应的历险记" data-url="http://yoursite.com/2016/05/23/TableViewTrick/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="GalvinChen" />
+          <p class="site-author-name" itemprop="name">GalvinChen</p>
+          <p class="site-description motion-element" itemprop="description">Hi!<br>I'm Galvin</br> An iOS developer working @ ShenZhen</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ttube" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2213936297" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#round-1"><span class="nav-number">1.1.</span> <span class="nav-text">round 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-2"><span class="nav-number">1.2.</span> <span class="nav-text">round 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-3"><span class="nav-number">1.3.</span> <span class="nav-text">round 3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-4"><span class="nav-number">1.4.</span> <span class="nav-text">round 4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-5"><span class="nav-number">1.5.</span> <span class="nav-text">round 5</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GalvinChen</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"galvinchen"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
