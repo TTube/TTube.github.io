@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%204.jpg">
 <meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/step2.gif">
 <meta property="og:image" content="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg">
-<meta property="og:updated_time" content="2016-05-23T18:08:30.000Z">
+<meta property="og:updated_time" content="2016-05-25T16:30:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UITableView reloadData 无响应的历险记">
 <meta name="twitter:description" content="背景
@@ -370,11 +370,17 @@
 <p>这样，这个category就完成了，再来验证一下问题是否存在～</p>
 <p><img src="http://o7kgwcg81.bkt.clouddn.com/step2.gif" alt="gif2"></p>
 <p>Done！完美！</p>
-<h4 id="round-5"><a href="#round-5" class="headerlink" title="round 5"></a>round 5</h4><p>这种解决方式让我产生了困扰，为什么需要这样子来解决？到底是什么原因导致了这个bug？为什么用了<a href="#jump_round3">round3</a>的方法无法hook到reloadData的这个方法？</p>
+<h4 id="round5"><a href="#round5" class="headerlink" title="round5"></a>round5</h4><p>这种解决方式让我产生了困扰，为什么需要这样子来解决？到底是什么原因导致了这个bug？为什么用了<a href="#jump_round3">round3</a>的方法无法hook到reloadData的这个方法？</p>
 <p>当时打印了reload的函数指针，发现它指向的是MJRefresh hook的reload方法，看了下它的实现，并没有什么问题。</p>
 <p>该不会是有某一个地方hook了reload的方法，并且在reload的时候 进行了window判断吧？<br>结果，还真的是这个问题……发现了在一个不起眼的地方，有一个我当时写来自动计算tableViewCell高度的一个category…里面为了不让tableView不在window的时候发生reload，运行了下面这一段代码</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)tt_reloadData</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(!<span class="keyword">self</span>.window)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.autoRefreshCellHeightCache)&#123;</span><br><span class="line">        [<span class="keyword">self</span>.portraitHeightCache clearCache];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">self</span>.preCalculateCellHeight)&#123;</span><br><span class="line">        [<span class="keyword">self</span> registerPreCalculateRunloop];</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="keyword">self</span> tt_reloadData];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>真的是…<img src="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg" width="100" height="100" alt="图片名称" align="center"> </p>
+<p>真的是…<br><img src="http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg" width="100" height="100" alt="图片名称" align="center"> </p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>搞了那么大个尴尬的乌龙，其实在很早的时候就可以避免了，其实文中走的弯路还不知5个round那么简单。我当时甚至还用上了kvo的思想去解这个问题了，现在想想，自己真的是有病</p>
+<ol>
+<li>当发生reload的时候完全可以查看一下reload的调用栈，再去查看每个调用栈的具体实现，这个bug，不到5分钟就能解决</li>
+<li>如果不是全局框架相关，最好还是乖乖的用继承。</li>
+<li>method swizzling会有很多影响，对一个类用多了自己都无法管理。</li>
+</ol>
 
       
     </div>
@@ -556,7 +562,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#round-1"><span class="nav-number">1.1.</span> <span class="nav-text">round 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-2"><span class="nav-number">1.2.</span> <span class="nav-text">round 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-3"><span class="nav-number">1.3.</span> <span class="nav-text">round 3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-4"><span class="nav-number">1.4.</span> <span class="nav-text">round 4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-5"><span class="nav-number">1.5.</span> <span class="nav-text">round 5</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#round-1"><span class="nav-number">1.1.</span> <span class="nav-text">round 1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-2"><span class="nav-number">1.2.</span> <span class="nav-text">round 2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-3"><span class="nav-number">1.3.</span> <span class="nav-text">round 3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round-4"><span class="nav-number">1.4.</span> <span class="nav-text">round 4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#round5"><span class="nav-number">1.5.</span> <span class="nav-text">round5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">1.6.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-05-23T18:08:30.000Z</updated>
+  <updated>2016-05-25T16:30:31.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2016/05/23/TableViewTrick/"/>
     <id>http://yoursite.com/2016/05/23/TableViewTrick/</id>
     <published>2016-05-23T14:23:32.000Z</published>
-    <updated>2016-05-23T18:08:30.000Z</updated>
+    <updated>2016-05-25T16:30:31.000Z</updated>
     
     <content type="html">&lt;h3 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h3&gt;&lt;blockquote&gt;
 &lt;p&gt;一天，测试妹子跑过来给我提了个问题：一个列表页A，在请求数据（刷新中）的时候，点了别的按钮，push进了界面B，抓包能看到有返回结果，但是pop掉B之后，发现A的界面并没有更新。我当时就虎躯一震！竟然会有这样的错误？然后走了各种弯路解决了之后，最后知道真相的我眼泪掉下来.&lt;/p&gt;
@@ -64,11 +64,17 @@
 &lt;p&gt;这样，这个category就完成了，再来验证一下问题是否存在～&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://o7kgwcg81.bkt.clouddn.com/step2.gif&quot; alt=&quot;gif2&quot;&gt;&lt;/p&gt;
 &lt;p&gt;Done！完美！&lt;/p&gt;
-&lt;h4 id=&quot;round-5&quot;&gt;&lt;a href=&quot;#round-5&quot; class=&quot;headerlink&quot; title=&quot;round 5&quot;&gt;&lt;/a&gt;round 5&lt;/h4&gt;&lt;p&gt;这种解决方式让我产生了困扰，为什么需要这样子来解决？到底是什么原因导致了这个bug？为什么用了&lt;a href=&quot;#jump_round3&quot;&gt;round3&lt;/a&gt;的方法无法hook到reloadData的这个方法？&lt;/p&gt;
+&lt;h4 id=&quot;round5&quot;&gt;&lt;a href=&quot;#round5&quot; class=&quot;headerlink&quot; title=&quot;round5&quot;&gt;&lt;/a&gt;round5&lt;/h4&gt;&lt;p&gt;这种解决方式让我产生了困扰，为什么需要这样子来解决？到底是什么原因导致了这个bug？为什么用了&lt;a href=&quot;#jump_round3&quot;&gt;round3&lt;/a&gt;的方法无法hook到reloadData的这个方法？&lt;/p&gt;
 &lt;p&gt;当时打印了reload的函数指针，发现它指向的是MJRefresh hook的reload方法，看了下它的实现，并没有什么问题。&lt;/p&gt;
 &lt;p&gt;该不会是有某一个地方hook了reload的方法，并且在reload的时候 进行了window判断吧？&lt;br&gt;结果，还真的是这个问题……发现了在一个不起眼的地方，有一个我当时写来自动计算tableViewCell高度的一个category…里面为了不让tableView不在window的时候发生reload，运行了下面这一段代码&lt;/p&gt;
 &lt;figure class=&quot;highlight objc&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)tt_reloadData&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(!&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.window)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.autoRefreshCellHeightCache)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.portraitHeightCache clearCache];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.preCalculateCellHeight)&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; registerPreCalculateRunloop];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; tt_reloadData];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;真的是…&lt;img src=&quot;http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg&quot; width=&quot;100&quot; height=&quot;100&quot; alt=&quot;图片名称&quot; align=&quot;center&quot;&gt; &lt;/p&gt;
+&lt;p&gt;真的是…&lt;br&gt;&lt;img src=&quot;http://o7kgwcg81.bkt.clouddn.com/image/emo/FullSizeRender%203.jpg&quot; width=&quot;100&quot; height=&quot;100&quot; alt=&quot;图片名称&quot; align=&quot;center&quot;&gt; &lt;/p&gt;
+&lt;h4 id=&quot;总结&quot;&gt;&lt;a href=&quot;#总结&quot; class=&quot;headerlink&quot; title=&quot;总结&quot;&gt;&lt;/a&gt;总结&lt;/h4&gt;&lt;p&gt;搞了那么大个尴尬的乌龙，其实在很早的时候就可以避免了，其实文中走的弯路还不知5个round那么简单。我当时甚至还用上了kvo的思想去解这个问题了，现在想想，自己真的是有病&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;当发生reload的时候完全可以查看一下reload的调用栈，再去查看每个调用栈的具体实现，这个bug，不到5分钟就能解决&lt;/li&gt;
+&lt;li&gt;如果不是全局框架相关，最好还是乖乖的用继承。&lt;/li&gt;
+&lt;li&gt;method swizzling会有很多影响，对一个类用多了自己都无法管理。&lt;/li&gt;
+&lt;/ol&gt;
 </content>
     
     <summary type="html">
